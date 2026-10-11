@@ -1,7 +1,8 @@
 export type CourseStatus =
   | "planned"
   | "studying"
-  | "completed";
+  | "completed"
+  | "archived";
 
 export type CourseFilter =
   | "all"
