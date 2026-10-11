@@ -1,14 +1,13 @@
+export type CourseID =
+  string | number;
+
 export type CourseStatus =
   | "planned"
   | "studying"
   | "completed"
   | "archived";
 
-export type CourseFilter =
-  | "all"
-  | CourseStatus;
-
-export type Course = {
+export interface Course {
   id: string;
   title: string;
   credits: number;
@@ -18,3 +17,14 @@ export type Course = {
 
 export type OnOpenCourse =
   (courseId: string) => void;
+
+export type CourseState =
+  | { status: "loading" }
+  | {
+      status: "success";
+      data: Course[];
+    }
+  | {
+      status: "error";
+      message: string;
+    };

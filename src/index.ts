@@ -1,52 +1,36 @@
-import { courses } from "./course.data";
-
-import type {
-  OnOpenCourse
-} from "./course.types";
+import {
+  rawCoursePayload
+} from "./data/coursePayload";
 
 import {
-  printCourse,
-  filterCourses,
-  calculateTotalCredits,
-  findCourseById
-} from "./course.service";
+  toCourseState
+} from "./services/courseParser";
 
-const openCourse: OnOpenCourse =
-  (courseId) => {
-    const course =
-      findCourseById(courses, courseId);
+import {
+  openCourse,
+  runCourseReport
+} from "./app/courseApp";
 
-    if (course === null) {
-      console.log(
-        "Cannot open course:",
-        courseId
-      );
-      return;
-    }
+const state =
+  toCourseState(rawCoursePayload);
 
+switch (state.status) {
+  case "loading":
+    console.log("Loading...");
+    break;
+
+  case "error":
     console.log(
-      "Opening course:",
-      course.title
+      "Error:",
+      state.message
     );
-  };
+    break;
 
-console.log("=== COURSE POCKET ===");
-courses.forEach(printCourse);
-
-const studyingCourses =
-  filterCourses(
-    courses,
-    "studying"
-  );
-
-console.log("\n=== STUDYING ===");
-studyingCourses.forEach(printCourse);
-
-console.log(
-  "\nTotal credits:",
-  calculateTotalCredits(courses)
-);
-
-openCourse("MC101");
-openCourse("UNKNOWN");
-export {};
+  case "success":
+    runCourseReport(state.data);
+    openCourse(
+      state.data,
+      "MC101"
+    );
+    break;
+}
